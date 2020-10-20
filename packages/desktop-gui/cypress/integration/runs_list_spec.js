@@ -1,5 +1,3 @@
-const moment = require('moment')
-
 describe('Runs List', function () {
   beforeEach(function () {
     cy.fixture('user').as('user')
@@ -72,7 +70,7 @@ describe('Runs List', function () {
 
   context('api server connection', function () {
     beforeEach(function () {
-      const timestamp = moment('2016-12-19T10:00:00').valueOf()
+      const timestamp = new Date(2016, 11, 19, 10, 0, 0).valueOf()
 
       cy.clock(timestamp)
       this.getCurrentUser.resolve(this.user)
