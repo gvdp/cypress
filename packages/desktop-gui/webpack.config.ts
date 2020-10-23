@@ -15,13 +15,6 @@ const config: webpack.Configuration = {
 }
 
 // @ts-ignore
-config.module.rules[0].use.options.plugins = [
-// @ts-ignore
-  ...config.module.rules[0].use.options.plugins,
-  [require.resolve('@babel/plugin-transform-modules-commonjs'), { loose: true }],
-]
-
-// @ts-ignore
 config.plugins = [
   // @ts-ignore
   ...config.plugins,
