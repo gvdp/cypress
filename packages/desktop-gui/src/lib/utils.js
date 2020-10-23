@@ -1,10 +1,11 @@
 import _ from 'lodash'
 import gravatar from 'gravatar'
 import dayjs from 'dayjs'
-import * as moment from 'moment'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import updateLocale from 'dayjs/plugin/updateLocale'
+import duration from 'dayjs/plugin/duration'
 
+dayjs.extend(duration)
 dayjs.extend(relativeTime)
 dayjs.extend(updateLocale)
 dayjs.updateLocale('en', {
@@ -34,30 +35,28 @@ const osIconLookup = {
   linux: 'linux',
 }
 
-export const getFormattedTimeFromNow = (time) => {
-  return dayjs(time).fromNow()
+export const getFormattedTimeFromNow = (timeAsIsoString) => {
+  return dayjs(timeAsIsoString).fromNow()
 }
 
-export const durationFormatted = (durationInMs, padMinutes = true) => {
-  const duration = moment.duration(durationInMs)
+export let durationFormatted = (durationInMs) => {
+  if (durationInMs < 1000) {
+    return `${durationInMs}ms`
+  }
 
-  const durationSecs = duration.seconds() ? `${duration.seconds()}` : ''
-  const durationMins = duration.minutes() ? `${duration.minutes()}` : ''
-  const durationHrs = duration.hours() ? `${duration.hours()}` : ''
+  const dayDuration = dayjs.duration(durationInMs)
+
+  const durationSecs = dayDuration.seconds() ? `${dayDuration.seconds()}` : ''
+  const durationMins = dayDuration.minutes() ? `${dayDuration.minutes()}` : ''
+  const durationHrs = dayDuration.hours() ? `${dayDuration.hours()}` : ''
 
   const total = _.compact([
     durationHrs,
-    !!durationHrs || padMinutes ? _.padStart(durationMins, 2, '0') : durationMins,
+    _.padStart(durationMins, 2, '0'),
     _.padStart(durationSecs, 2, '0'),
   ])
 
-  const totalMinSec = total.join(':')
-
-  if (totalMinSec === '00:00') {
-    return `${duration.milliseconds()}ms`
-  }
-
-  return totalMinSec
+  return total.join(':')
 }
 
 export const osIcon = (osName) => {
